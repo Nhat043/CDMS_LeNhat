@@ -91,3 +91,12 @@ There is no `DUPLICATE` outcome. Duplicate events are rejected at the database l
 - `AwareDatetime` rejects timestamps without a timezone, avoiding naive/aware datetime comparison errors later.
 - `units` accepts both `list[str]` and `list[Unit]` to support payloads from either the list or detail endpoint.
 
+## 12. Polling and worker
+
+- Polling scans all pages every cycle because the API has no date filter or total count.
+- `observed_at` is recorded per page since later pages are read later.
+- `dedup_key` includes `batch_id`, so each polling cycle can record the same product again. Polling is a new observation, not a duplicate callback.
+- One worker processes events from all three channels through the same processor.
+- If the inventory API is down, the worker logs the error and keeps processing the inbox.
+- If an event fails, it's marked `FAILED` and the worker moves on. The raw payload is kept for debugging. Retries are not implemented yet.
+

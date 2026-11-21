@@ -93,3 +93,10 @@ def test_first_snapshot_diff_contains_all_fields():
         "units": {"from": None, "to": []},
         "categories": {"from": None, "to": []},
     }
+
+
+def test_expiry_falls_back_when_the_other_name_is_null():
+    assert (
+        normalise({"hasExpiration": None, "isExpiryDate": True})["hasExpiration"]
+        is True
+    )

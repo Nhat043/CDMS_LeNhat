@@ -22,6 +22,15 @@ class Snapshot:
     observed_at: datetime
 
 
+def _expiry(raw: dict) -> bool | None:
+    """The list endpoint calls this hasExpiration, details calls it
+    isExpiryDate. A key can be present and null, so .get's default is
+    not enough.
+    """
+    value = raw.get("hasExpiration")
+    return raw.get("isExpiryDate") if value is None else value
+
+
 def normalise(raw: dict) -> dict:
     """Convert payloads from different channels into a consistent shape."""
     return {
@@ -30,7 +39,7 @@ def normalise(raw: dict) -> dict:
         "productName": raw.get("productName"),
         "assetType": raw.get("assetType"),
         "hasSerial": raw.get("hasSerial"),
-        "hasExpiration": raw.get("hasExpiration", raw.get("isExpiryDate")),
+        "hasExpiration": _expiry(raw),
         "color": raw.get("color"),
         "size": raw.get("size"),
         "description": raw.get("description"),

@@ -21,6 +21,7 @@ class WebhookProduct(BaseModel):
     assetType: str | None = None
     hasSerial: bool | None = None
     hasExpiration: bool | None = None
+    isExpiryDate: bool | None = None  # the details endpoint's name for the same flag
     color: str | None = None
     size: str | None = None
     description: str | None = None
