@@ -5,8 +5,11 @@ description = "Change Data Management Service: stores only changes to inventory 
 requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.20.1",
+    "faker>=40.63.0",
+    "fastapi>=0.165.0",
     "psycopg[binary]>=3.3.9",
     "pydantic>=2.14.4",
     "pydantic-settings>=2.16.3",
     "sqlalchemy>=2.1.9",
+    "uvicorn[standard]>=0.54.0",
 ]
