@@ -11,6 +11,11 @@ class Settings(BaseSettings):
 
     inventory_base_url: str = "http://127.0.0.1:8001"
     cdms_base_url: str = "http://127.0.0.1:8002"
+    poll_page_size: int = 50
+    poll_enabled: bool = True
+    poll_interval_seconds: float = 30
+    worker_batch_size: int = 200
+    worker_idle_sleep_seconds: float = 1.0
 
     model_config = SettingsConfigDict(
         env_file=".env",
