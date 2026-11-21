@@ -55,3 +55,28 @@ I'm keeping the original API behavior rather than cleaning it up:
 - List returns an array without a total count.
 
 These are the kinds of issues CDMS needs to handle. I'll normalize each payload before comparing it.
+
+## 8. Normalising before comparing
+
+All payloads are converted to the same shape before hashing.
+
+- `units` and `categories` are sorted because their order has no business meaning. If the API returns them in a different order, that shouldn't count as a change.
+- The two expiry flag names are mapped to `hasExpiration`.
+- The hash is SHA-256 of the normalised JSON, with `sort_keys=True`. Comparing hashes is simpler than comparing nested JSON directly.
+- A test confirms that the same product from the list and detail endpoints produces the same hash.
+
+## 9. Processing one event
+
+There are three possible outcomes: `APPLIED`, `NO_CHANGE`, and `STALE`.
+
+There is no `DUPLICATE` outcome. Duplicate events are rejected at the database level by the unique `dedup_key` constraint, before they reach the processor. The two checks serve different purposes.
+
+- `NO_CHANGE` still advances `observed_at`. Without this, an older event could arrive later and be accepted.
+- Processing is serialized with `pg_advisory_xact_lock(product_id)` rather than `SELECT ... FOR UPDATE`. When a product is seen for the first time, there is no state row to lock. Two workers could both try to insert it, causing one to fail on the primary key. The advisory lock works without an existing row.
+
+## 10. Testing
+
+- The decision logic uses pure functions, so it can be tested without a database.
+- Database tests run against PostgreSQL, not SQLite. SQLite doesn't support advisory locks or `JSONB`, and handles timezone-aware datetimes differently, which could hide comparison issues.
+- Each test runs inside an outer transaction. Since `process()` calls `commit()`, the session uses a savepoint. The outer transaction is rolled back after the test, so no data is left behind.
+- There is no separate test database yet. Setting one up is the next step if I need to run tests in parallel.
