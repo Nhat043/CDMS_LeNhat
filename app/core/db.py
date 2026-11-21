@@ -29,3 +29,8 @@ CdmsSession = sessionmaker(bind=cdms_engine, expire_on_commit=False)
 def get_inventory_db() -> Iterator[Session]:
     with InventorySession() as db:
         yield db
+
+
+def get_cdms_db() -> Iterator[Session]:
+    with CdmsSession() as db:
+        yield db

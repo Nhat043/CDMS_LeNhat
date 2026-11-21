@@ -80,3 +80,14 @@ There is no `DUPLICATE` outcome. Duplicate events are rejected at the database l
 - Database tests run against PostgreSQL, not SQLite. SQLite doesn't support advisory locks or `JSONB`, and handles timezone-aware datetimes differently, which could hide comparison issues.
 - Each test runs inside an outer transaction. Since `process()` calls `commit()`, the session uses a savepoint. The outer transaction is rolled back after the test, so no data is left behind.
 - There is no separate test database yet. Setting one up is the next step if I need to run tests in parallel.
+
+
+## 11. The webhook contract
+
+- Vietful's docs don't define a product CDC webhook, so this is a contract I designed for the prototype.
+- `eventId` identifies the event for deduplication, while `observedAt` records when the sender read the product.
+- Insert first, then catch `IntegrityError` on the unique `dedup_key`. A separate `SELECT` before `INSERT` could cause a race condition.
+- Duplicate callbacks return `202` with `status: "duplicate"` instead of an error, so senders can retry safely.
+- `AwareDatetime` rejects timestamps without a timezone, avoiding naive/aware datetime comparison errors later.
+- `units` accepts both `list[str]` and `list[Unit]` to support payloads from either the list or detail endpoint.
+
