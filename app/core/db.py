@@ -23,6 +23,8 @@ cdms_engine = create_engine(_settings.cdms_database_url)
 
 InventorySession = sessionmaker(bind=inventory_engine, expire_on_commit=False)
 
+CdmsSession = sessionmaker(bind=cdms_engine, expire_on_commit=False)
+
 
 def get_inventory_db() -> Iterator[Session]:
     with InventorySession() as db:
