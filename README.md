@@ -2,7 +2,18 @@
 
 Change Data Management Service. Tracks product data changes from an inventory service through three channels: scheduled polling, webhooks, and Excel uploads.
 
-Job test for kSynerX. See [docs/](docs/) for the API analysis and design decisions.
+Job test for kSynerX.
+
+## Documents
+
+| | |
+|---|---|
+| [Vietful API analysis](docs/vietful-api-analysis.md) | What the real API gives me, what it doesn't, and what that forces |
+| [Design decisions](docs/design-decisions.md) | Why the system is shaped this way |
+| [Implementation status](docs/implementation-status.md) | What's done, what isn't, and why |
+| [Test report](docs/test-report.md) | What I measured and what it showed |
+| [Dependencies](docs/dependencies.md) | Every library and why it's there |
+| [Lessons learned](docs/lessons-learned.md) | Three things that went wrong |
 
 ## Running with Docker
 
