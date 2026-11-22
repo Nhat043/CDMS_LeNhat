@@ -100,3 +100,10 @@ There is no `DUPLICATE` outcome. Duplicate events are rejected at the database l
 - If the inventory API is down, the worker logs the error and keeps processing the inbox.
 - If an event fails, it's marked `FAILED` and the worker moves on. The raw payload is kept for debugging. Retries are not implemented yet.
 
+## 13. Excel imports
+
+- Invalid rows are marked `INVALID` during upload and never enter the queue. The worker only picks up `PENDING`, so it never has to process a row with a null `product_id`.
+- One bad row doesn't fail the whole file. Each row keeps its own error, and valid rows can still be processed.
+- Excel cells have no timezone, so `observedAt` is documented as UTC.
+- `units` and `categories` are flattened into text (`CAI,HOP` and `CAT001|Phone;CAT002|Laptop`) since a spreadsheet cell can't hold a list.
+- `dedup_key` uses `excel:{batch}:{row}`. Uploading the same file again creates a new batch, so it's treated as a new import rather than a duplicate.
