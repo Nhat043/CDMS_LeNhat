@@ -45,8 +45,7 @@ docker compose exec worker python -m scripts.callback_client PARTNER00003
 
 ```bash
 docker compose exec cdms python -m scripts.make_excel
-docker compose exec cdms curl -s -X POST \
-  http://localhost:8002/cdms/v1/imports/products -F "file=@sample-import.xlsx"
+docker compose exec cdms python -m scripts.upload_excel
 ```
 
 Then `GET /cdms/v1/imports/{batchId}` for per-row results.

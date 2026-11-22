@@ -1,12 +1,12 @@
 """Write a sample upload: some good rows, some broken ones."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from openpyxl import Workbook
 
 from app.cdms.excel import HEADER
 
-NOW = datetime(2026, 11, 22, 9, 0)
+NOW = datetime.now(timezone.utc).replace(tzinfo=None)
 
 ROWS = [
     (
