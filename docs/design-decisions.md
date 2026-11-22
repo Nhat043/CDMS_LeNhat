@@ -28,7 +28,7 @@ CDMS can't JOIN directly with the emulator's database, so it has to use HTTP.
 
 That's intentional. The exercise is about integrating with an external service, not sharing tables.
 
-Both databases currently run on the same Postgres instance. I'll split them into two containers in the Docker phase.
+Locally, they share one Postgres instance. Under Docker, each gets its own container, so I can stop one without affecting the other.
 
 ## 5. Exactly-once handling
 
@@ -107,3 +107,15 @@ There is no `DUPLICATE` outcome. Duplicate events are rejected at the database l
 - Excel cells have no timezone, so `observedAt` is documented as UTC.
 - `units` and `categories` are flattened into text (`CAI,HOP` and `CAT001|Phone;CAT002|Laptop`) since a spreadsheet cell can't hold a list.
 - `dedup_key` uses `excel:{batch}:{row}`. Uploading the same file again creates a new batch, so it's treated as a new import rather than a duplicate.
+
+## 14. Docker setup
+
+One image, three commands - inventory emulator, CDMS API, worker. The worker and the API can't drift onto different versions of the code.
+
+Migration runs as its own one-off service rather than inside the CDMS entrypoint, so the API and the worker don't race to run it. Both wait on `service_completed_successfully`.
+
+Each database gets its own Postgres container. That's what turns the two-database decision into real isolation: before Docker they shared one local instance, so I could only stop both.
+
+No volumes. `docker compose down` takes the data with it, so a demo always starts from a known state. Production would want the opposite.
+
+`uv sync --frozen` fails the build if the lockfile doesn't match `pyproject.toml`, instead of quietly resolving something else.
