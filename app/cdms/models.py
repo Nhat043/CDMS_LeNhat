@@ -80,7 +80,9 @@ class ProductState(CdmsBase):
 
     __tablename__ = "product_state"
 
-    product_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    product_id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=False
+    )
     payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
     content_hash: Mapped[str] = mapped_column(CHAR(64), nullable=False)
     observed_at: Mapped[datetime] = mapped_column(
