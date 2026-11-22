@@ -14,6 +14,7 @@ Job test for kSynerX.
 | [Test report](docs/test-report.md) | What I measured and what it showed |
 | [Dependencies](docs/dependencies.md) | Every library and why it's there |
 | [Lessons learned](docs/lessons-learned.md) | Three things that went wrong |
+| [Database schema](docs/schema.md) | The tables, and which constraints carry exactly-once |
 
 ## Running with Docker
 
