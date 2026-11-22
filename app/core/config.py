@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     worker_batch_size: int = 200
     worker_idle_sleep_seconds: float = 1.0
 
+    excel_max_bytes: int = 5 * 1024 * 1024
+    excel_max_rows: int = 10_000
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
